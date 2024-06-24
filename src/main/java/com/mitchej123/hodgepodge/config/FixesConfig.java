@@ -92,6 +92,11 @@ public class FixesConfig {
     @Config.RequiresMcRestart
     public static boolean fixFriendlyCreatureSounds;
 
+    @Config.Comment("Fix Volume Slider is ineffective until reaching the lower end")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean logarithmicVolumeControl;
+
     @Config.Comment("Fix vanilla light calculation sometimes cause NPE on thermos")
     @Config.DefaultBoolean(true)
     @Config.RequiresMcRestart
@@ -317,6 +322,16 @@ public class FixesConfig {
     @Config.RequiresMcRestart
     public static boolean validatePacketEncodingBeforeSendingShouldCrash;
 
+    @Config.Comment("Checks saved TileEntity coordinates earlier to provide a more descriptive error message")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean earlyChunkTileCoordinateCheck;
+
+    @Config.Comment("Destroy and log TileEntities failing the safe coordinate instead of crashing the game (can cause loss of data)")
+    @Config.DefaultBoolean(false)
+    @Config.RequiresMcRestart
+    public static boolean earlyChunkTileCoordinateCheckDestructive;
+
     // affecting multiple mods
 
     @Config.Comment("Remove old/stale/outdated update checks.")
@@ -384,6 +399,11 @@ public class FixesConfig {
     @Config.RequiresMcRestart
     public static boolean fixExtraUtilitiesDrumEatingCells;
 
+    @Config.Comment("Fix Extra Utilities Lapis Caelestis microblocks rendering")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean fixExtraUtilitiesGreenscreenMicroblocks;
+
     @Config.Comment("Fixes rendering issues with transparent items from Extra Utilities")
     @Config.DefaultBoolean(true)
     @Config.RequiresMcRestart
@@ -393,6 +413,16 @@ public class FixesConfig {
     @Config.DefaultBoolean(true)
     @Config.RequiresMcRestart
     public static boolean fixExtraUtilitiesUnEnchanting;
+
+    @Config.Comment("Remove rain from the Last Millenium (Extra Utilities)")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean fixExtraUtilitiesLastMilleniumRain;
+
+    @Config.Comment("Remove creatures from the Last Millenium (Extra Utilities)")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean fixExtraUtilitiesLastMilleniumCreatures;
 
     // Galacticraft
 
@@ -546,6 +576,11 @@ public class FixesConfig {
     @Config.RequiresMcRestart
     public static boolean fixThaumcraftLeavesLag;
 
+    @Config.Comment("Fix Thaumcraft wand pedestal vis duplication")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean fixWandPedestalVisDuplication;
+
     // Thermal Dynamics
 
     @Config.Comment("Prevent crash with Thermal Dynamics from Negative Array Exceptions from item duct transfers")
@@ -576,6 +611,11 @@ public class FixesConfig {
     @Config.DefaultBoolean(true)
     @Config.RequiresMcRestart
     public static boolean fixWitcheryReflections;
+
+    @Config.Comment("Enhanced Witchery Thunder Detection for rituals and Witch Hunters")
+    @Config.DefaultBoolean(true)
+    @Config.RequiresMcRestart
+    public static boolean fixWitcheryThunderDetection;
 
     // Xaero's World Map
 

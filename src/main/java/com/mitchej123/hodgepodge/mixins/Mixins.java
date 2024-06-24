@@ -82,6 +82,10 @@ public enum Mixins {
     FIX_FRIENDLY_CREATURE_SOUNDS(new Builder("Fix Friendly Creature Sounds").setPhase(Phase.EARLY)
             .addMixinClasses("minecraft.MixinSoundHandler").setSide(Side.CLIENT).addTargetedMod(TargetedMod.VANILLA)
             .setApplyIf(() -> FixesConfig.fixFriendlyCreatureSounds)),
+    LOGARITHMIC_VOLUME_CONTROL(new Builder("Logarithmic Volume Control").setPhase(Phase.EARLY)
+            .addMixinClasses("minecraft.MixinSoundManager", "minecraft.MixinSoundManagerLibraryLoader")
+            .setSide(Side.CLIENT).addTargetedMod(TargetedMod.VANILLA)
+            .setApplyIf(() -> FixesConfig.logarithmicVolumeControl)),
     THROTTLE_ITEMPICKUPEVENT(new Builder("Throttle Item Pickup Event").setPhase(Phase.EARLY)
             .addMixinClasses("minecraft.MixinEntityPlayer").setSide(Side.BOTH)
             .setApplyIf(() -> FixesConfig.throttleItemPickupEvent).addTargetedMod(TargetedMod.VANILLA)),
@@ -387,6 +391,12 @@ public enum Mixins {
                     "minecraft.fastload.MixinPlayerInstance")
             .setApplyIf(() -> SpeedupsConfig.fastChunkHandling)),
 
+    EARLY_CHUNK_TILE_COORDINATE_CHECK(
+            new Builder("Checks saved TileEntity coordinates earlier to provide a more descriptive error message")
+                    .setPhase(Phase.EARLY).setSide(Side.BOTH).addTargetedMod(TargetedMod.VANILLA)
+                    .addMixinClasses("minecraft.MixinChunk")
+                    .setApplyIf(() -> FixesConfig.earlyChunkTileCoordinateCheck)),
+
     // Ic2 adjustments
     IC2_UNPROTECTED_GET_BLOCK_FIX(new Builder("IC2 Kinetic Fix").setPhase(Phase.EARLY).setSide(Side.BOTH)
             .addMixinClasses("ic2.MixinIc2WaterKinetic").setApplyIf(() -> FixesConfig.fixIc2UnprotectedGetBlock)
@@ -494,6 +504,9 @@ public enum Mixins {
             .addMixinClasses("thaumcraft.MixinBlockMagicalLeaves", "thaumcraft.MixinBlockMagicalLog")
             .setPhase(Phase.LATE).setSide(Side.BOTH).setApplyIf(() -> FixesConfig.fixThaumcraftLeavesLag)
             .addTargetedMod(TargetedMod.THAUMCRAFT)),
+    FIX_THAUMCRAFT_VIS_DUPLICATION(new Builder("Fix Thaumcraft Vis Duplication")
+            .addMixinClasses("thaumcraft.MixinTileWandPedestal_VisDuplication").setPhase(Phase.LATE).setSide(Side.BOTH)
+            .setApplyIf(() -> FixesConfig.fixWandPedestalVisDuplication).addTargetedMod(TargetedMod.THAUMCRAFT)),
 
     // BOP
     FIX_QUICKSAND_XRAY(new Builder("Fix Xray through block without collision boundingBox").setPhase(Phase.LATE)
@@ -514,7 +527,9 @@ public enum Mixins {
     JAVA12_BOP(new Builder("BOP Java12-safe reflection").setPhase(Phase.LATE).setSide(Side.BOTH)
             .addMixinClasses("biomesoplenty.MixinBOPBiomes").addMixinClasses("biomesoplenty.MixinBOPReflectionHelper")
             .setApplyIf(() -> FixesConfig.java12BopCompat).addTargetedMod(TargetedMod.BOP)),
-
+    DISABLE_QUICKSAND_GENERATION(new Builder("Disable BOP quicksand").setPhase(Phase.LATE).setSide(Side.BOTH)
+            .addMixinClasses("biomesoplenty.MixinDisableQuicksandGeneration")
+            .setApplyIf(() -> TweaksConfig.removeBOPQuicksandGeneration).addTargetedMod(TargetedMod.BOP)),
     // COFH
     COFH_REMOVE_TE_CACHE(
             new Builder("Remove CoFH tile entity cache").addMixinClasses("minecraft.MixinWorld_CoFH_TE_Cache")
@@ -644,6 +659,18 @@ public enum Mixins {
             .addMixinClasses("extrautilities.MixinBlockDrum").setSide(Side.BOTH).setPhase(Phase.LATE)
             .setApplyIf(() -> FixesConfig.fixExtraUtilitiesDrumEatingCells)
             .addTargetedMod(TargetedMod.EXTRA_UTILITIES)),
+    FIX_GREENSCREEN_MICROBLOCKS(new Builder("Fix extra utilities Lapis Caelestis microblocks")
+            .addMixinClasses("extrautilities.MixinFullBrightMicroMaterial").setSide(Side.CLIENT).setPhase(Phase.LATE)
+            .setApplyIf(() -> FixesConfig.fixExtraUtilitiesGreenscreenMicroblocks)
+            .addTargetedMod(TargetedMod.EXTRA_UTILITIES)),
+    FIX_LAST_MILLENIUM_RAIN(new Builder("Remove rain from the Last Millenium (Extra Utilities)")
+            .addMixinClasses("extrautilities.MixinChunkProviderEndOfTime").setPhase(Phase.LATE).setSide(Side.BOTH)
+            .setApplyIf(() -> FixesConfig.fixExtraUtilitiesLastMilleniumRain)
+            .addTargetedMod(TargetedMod.EXTRA_UTILITIES)),
+    FIX_LAST_MILLENIUM_CREATURES(new Builder("Remove creatures from the Last Millenium (Extra Utilities)")
+            .addMixinClasses("extrautilities.MixinWorldProviderEndOfTime").setPhase(Phase.LATE).setSide(Side.BOTH)
+            .setApplyIf(() -> FixesConfig.fixExtraUtilitiesLastMilleniumCreatures)
+            .addTargetedMod(TargetedMod.EXTRA_UTILITIES)),
 
     // PortalGun
     PORTALGUN_FIX_URLS(new Builder("Fix URLs used to download the sound pack")
@@ -685,6 +712,15 @@ public enum Mixins {
             .addMixinClasses("witchery.MixinExtendedPlayer", "witchery.MixinEntityReflection").setSide(Side.CLIENT)
             .setPhase(Phase.LATE).setApplyIf(() -> FixesConfig.fixWitcheryReflections)
             .addTargetedMod(TargetedMod.WITCHERY)),
+
+    FIX_WITCHERY_THUNDERING_DETECTION(new Builder(
+            "Fixes Witchery Thunder Detection for rituals and Witch Hunters breaking with mods modifying thunder frequency")
+                    .addMixinClasses(
+                            "witchery.MixinBlockCircle",
+                            "witchery.MixinEntityWitchHunter",
+                            "witchery.MixinRiteClimateChange")
+                    .setSide(Side.BOTH).setPhase(Phase.LATE).setApplyIf(() -> FixesConfig.fixWitcheryThunderDetection)
+                    .addTargetedMod(TargetedMod.WITCHERY)),
 
     // Various Exploits/Fixes
     GC_TIME_COMMAND_FIX(new Builder("GC Time Fix").addMixinClasses("minecraft.MixinTimeCommandGalacticraftFix")
